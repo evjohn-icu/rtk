@@ -1,0 +1,28 @@
+name: ARM64 runner probe
+
+# Throwaway probe: does the hosted windows-11-arm runner build rtk for its own
+# target (aarch64-pc-windows-msvc) with the bundled SQLite? Delete after use.
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-11-arm
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Show toolchain
+        run: |
+          rustc -vV
+          rustup target list --installed
+
+      - name: Build the CLI
+        run: cargo build -p rtk
+
+      - name: Run it
+        run: .\target\debug\rtk.exe --version
